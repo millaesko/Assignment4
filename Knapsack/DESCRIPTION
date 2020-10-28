@@ -1,0 +1,15 @@
+Package: Knapsack
+Type: Package
+Title: Provides methods for solving the knapsack problem
+Version: 0.1.0
+Author: Milla Esko
+Maintainer: Milla Esko <milla.esko@gmail.com>
+Description: The package includes two functions that can be used to solve the knapsack problem. 
+    brute_force_knapsack() goes through all possible combinations of objects and returns the one with the highest value.
+    greedy_knapsack() gives an estimation for the problem.
+License: none
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
