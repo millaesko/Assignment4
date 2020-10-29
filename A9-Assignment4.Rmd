@@ -1,0 +1,269 @@
+---
+title: "Assignment 4"
+author: "Group A9: Milla Esko"
+date: '2020-10-02'
+output: html_document
+theme: Szeged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. apartment()
+
+
+```{r, echo=TRUE, eval=TRUE}
+apartment<-function(rooms, m2){
+  if(m2<=0 | rooms<=0)
+    {stop("Invalid arguments")}
+  apartment<-list(rooms = rooms, m2 = m2)
+  class(apartment)<-"apartment"
+  return(apartment)
+}
+```
+
+
+```{r, echo=TRUE, eval=TRUE}
+print.apartment <- function(a){
+  if(a$rooms==1){
+    phrase="studio."
+  }
+  else{
+    phrase=paste(a$rooms, "room apartment.", sep="-")
+  }
+  cat("A", a$m2 , "square meter", phrase)
+}
+```
+
+Examples:
+
+```{r, echo=TRUE, eval=TRUE}
+a<-apartment(1, 25)
+print.apartment(a)
+```
+
+
+```{r, echo=TRUE, eval=TRUE}
+apartment(3, 81)
+```
+
+
+```{r, echo=TRUE, eval=TRUE}
+b<-apartment(5, 104)
+print(b)
+```
+
+```{r, echo=TRUE, eval=TRUE}
+class(b)
+```
+
+## 2. give_blood()
+
+```{r, echo=TRUE, eval=TRUE}
+give_blood<-function(lasttime = today(), holiday = "hemma", 
+                     sex, type_of_travel = NULL){
+  if(is.null(type_of_travel)){
+    extraTime = lasttime
+  }
+  else{
+    if(type_of_travel == "malaria"){
+      extraTime = int_end(holiday) + days(1) + months(6)
+    }
+    if(type_of_travel == "other"){
+      extraTime = int_end(holiday) + days(1) + weeks(4)}
+  }
+  k = ifelse(sex=="f",4,3)
+  suggestion = lasttime+months(k)
+  if(extraTime > suggestion){
+    suggestion = extraTime}
+  if(wday(suggestion) == 7){
+    suggestion = suggestion + days(2)
+    }
+  if(wday(suggestion) == 1){
+    suggestion = suggestion + days(1)
+  }
+  date = paste(paste("year",year(suggestion),sep="="),
+               paste("month",month.name[month(suggestion)],sep="="),
+               paste("day",day(suggestion),sep="="),
+               paste("weekday",wday(suggestion,label=TRUE,abbr = FALSE,),sep="="), 
+               sep=", ")
+return(date)
+  }
+```
+
+Examples:
+
+Test 1
+```{r, echo=TRUE, eval=TRUE}
+library(lubridate)
+Sys.setlocale("LC_TIME", "English")
+day1<-ymd("2014-02-24")
+give_blood(lasttime=day1,holiday="hemma", sex="m", type_of_travel=NULL)
+```
+
+```{r, echo=TRUE, eval=TRUE}
+give_blood(lasttime=day1,holiday="hemma", sex="f", type_of_travel=NULL)
+```
+
+Test 2
+```{r, echo=TRUE, eval=TRUE}
+day2<-ymd("2014-03-23")
+day3<-ymd("2014-04-24")
+holiday1<-interval(day2, day3)
+give_blood(lasttime=day1,holiday=holiday1, sex="m", type_of_travel="malaria")
+```
+
+```{r, echo=TRUE, eval=TRUE}
+give_blood(lasttime=day1,holiday=holiday1, sex="f", type_of_travel="malaria")
+```
+
+Test 3
+```{r, echo=TRUE, eval=TRUE}
+day4<-ymd("2014-04-13")
+day5<-ymd("2014-05-23")
+holiday2<-interval(day4, day5)
+give_blood(lasttime=day1,holiday=holiday2, sex="m", type_of_travel="other")
+```
+```{r, echo=TRUE, eval=TRUE}
+give_blood(lasttime=day1,holiday=holiday2, sex="f", type_of_travel="other")
+```
+
+## 3. Swedish social security number
+
+
+```{r, echo=TRUE, eval=TRUE}
+
+```
+
+# 3.1 pnr_ctrl()
+```{r, echo=TRUE, eval=TRUE}
+pnr_ctrl<-function(pnr){
+  nrs <- as.numeric(strsplit(pnr,NULL)[[1]])
+  mult <-nrs *c(2,1)
+  mult <- mult[3:11]
+  if(any(mult > 9)){
+    ddigits <- mult[which(mult>9)]
+    rest = ddigits%%10
+    sum = sum(mult[which(mult<10)]) + sum(rest) + sum(ddigits%/%10)}
+  else {sum = sum(mult)}
+  ctrl = 10 - sum%%10
+  pnr.is=ifelse(nrs[12] == ctrl,TRUE,FALSE)
+  return(pnr.is)
+}
+```
+
+Examples:
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "196408233234"
+pnr_ctrl(pnr)
+```
+
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "190101010101"
+pnr_ctrl(pnr)
+```
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "198112189876"
+pnr_ctrl(pnr)
+```
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "190303030303"
+pnr_ctrl(pnr)
+```
+
+
+# 3.2 pnr_sex()
+
+
+```{r, echo=TRUE, eval=TRUE}
+pnr_sex<-function(pnr){
+  nrs <- as.numeric(strsplit(pnr,NULL)[[1]])
+  sex=ifelse(nrs[11]%%2==0,"K","M")
+  return(sex)
+}
+```
+
+Examples:
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "196408233234"
+pnr_sex(pnr)
+```
+
+```{r, echo=TRUE, eval=TRUE}
+pnr<- "190202020202"
+pnr_sex(pnr)
+```
+
+## 4. The knapsack package
+
+
+```{r, echo=TRUE, eval=TRUE}
+set.seed(42)
+n <- 2000
+knapsack_objects<-data.frame(w =sample(1: 4000, size= n,replace= TRUE),
+                             v =runif(n = n,0, 10000))
+```
+
+
+## 4.2 Brute force search
+
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+brute_force_knapsack<-function(x, W){
+  stopifnot(is.data.frame(x) |
+              all(variable.names(x) %in% c("v","w"))|
+              all(x)>=0)
+  x <- cbind(i=c(1:nrow(x)),x) # keeps track of item number
+  y <- subset(x,w<=W) # filters out items that weigh more than W
+  nr_of_items<-nrow(y) # code from binary_combinations.pdf
+  n = 2^nr_of_items
+  all_combn_decimal <- 0:(n-1)
+  all_combn_matrix <-
+    sapply(all_combn_decimal, function(x){
+    result <- intToBits(x)
+    result <- as.numeric(result)
+    return(result[1:nr_of_items]) # returns matrix with columns representing each combination of items
+    })
+  results<-data.frame(i=c(1:n),
+                      w = colSums(y$w*all_combn_matrix), # total weights for each combinations
+                      v = colSums(y$v*all_combn_matrix)) # total value for each combination
+  results = subset(results,w<=W) # filter out combinations that exceed max weight
+  max_value_index <- results$i[which.max(results$v)]
+  value_max_comb <- all_combn_matrix[,max_value_index]
+  max_value_elements <- y$i[which(value_max_comb==1)]
+  return(list(value = round(max(results$v)),
+              elements = max_value_elements))
+}
+```
+
+## Greedy knapsack
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+greedy_knapsack <- function(x, W){
+  x$item <- c(1:nrow(x)) #keeps track of the original item number
+  x$ratio <- x$v/x$w
+  newdata <- x[order(x$ratio, decreasing = TRUE),]
+  cum_sum<-cumsum(newdata$w)
+  S_2 = which(cum_sum>W)[1]
+  S_1_items = c(1:(S_2-1))
+  S_1_value = sum(newdata$v[S_1_items])
+  S_2_value = newdata$v[S_2]
+  if(S_1_value < S_2_value){
+    value = S_2_value
+    elements = newdata$item[S_2]
+
+  }
+  else{
+    value = S_1_value
+    elements = newdata$item[S_1_items]
+  }
+  result = list(value = value, elements = elements)
+  return(result)
+}
+```
